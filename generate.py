@@ -17,7 +17,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 PROMPT_TEMPLATE = """You are a concise and factual assistant.
 Answer the question based only on the CONTEXT below.
 If the answer cannot be found in the context, say "N/A".
-Keep your answer short (within 20 words).
+Keep your answer short (within 30 words).
 
 QUESTION: {question}
 
@@ -70,9 +70,9 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
 
 def main():
     # 1. Load chunk and embedding
-    chunk_map = load_chunks("data/chunks_normal.jsonl")
-    index = build_faiss_index("index/embeddings.npy")
-    ids = np.load("index/ids.npy", allow_pickle=True)
+    chunk_map = load_chunks("data/chunks_littleItaly.jsonl")
+    index = build_faiss_index("index/embeddings_littleItaly.npy")
+    ids = np.load("index/ids_littleItaly.npy", allow_pickle=True)
     embed_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
     # 2. load the questions
@@ -101,7 +101,7 @@ def main():
     # 5. save the results
     with open("system_outputs/system_output_1.json", "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
-    print("Saved system_outputs/system_output_llm.json")
+    print("Saved system_outputs/system_output_1.json")
 
 if __name__ == "__main__":
     import numpy as np
