@@ -70,7 +70,7 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
 
 def main():
     # 1. Load chunk and embedding
-    chunk_map = load_chunks("chunks.jsonl")
+    chunk_map = load_chunks("data/chunks_normal.jsonl")
     index = build_faiss_index("index/embeddings.npy")
     ids = np.load("index/ids.npy", allow_pickle=True)
     embed_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
