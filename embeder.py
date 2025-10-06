@@ -15,7 +15,7 @@ def load_chunks(jsonl_path):
 
 def build_embeddings(
         # chunks_path="data/chunks_normal.jsonl",
-        chunks_path="data/chunks_test.jsonl",
+        chunks_path="data/chunks_littleItaly.jsonl",
         model_name="sentence-transformers/all-MiniLM-L6-v2",
         out_dir="index",
         batch_size=128,
@@ -51,13 +51,13 @@ def build_embeddings(
     ids  = np.array(ids)
 
     # Save the results
-    np.save(os.path.join(out_dir, "embeddings_test.npy"), embs)
-    np.save(os.path.join(out_dir, "ids_test.npy"), ids)
+    np.save(os.path.join(out_dir, "embeddings_Italy.npy"), embs)
+    np.save(os.path.join(out_dir, "ids_littleItaly.npy"), ids)
     print(f"Saved {embs.shape[0]} embeddings to {out_dir}/")
 
 if __name__ == "__main__":
     build_embeddings(
-        chunks_path="data/chunks_test.jsonl",          # File Path
+        chunks_path="data/chunks_littleItaly.jsonl",          # File Path
         model_name="sentence-transformers/all-MiniLM-L6-v2",
         out_dir="index",                     # Output Directory
         batch_size=128,
