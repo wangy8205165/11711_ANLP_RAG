@@ -64,7 +64,7 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
     # truncate
     # final = " ".join(final.split()[:20])
 
-    answer = outputs[0]["generated_text"][-1]['content']
+    answer = outputs[0]["generated_text"][-1]
 
     return answer
 
