@@ -48,13 +48,13 @@ txt_names = ["wiki.txt", "wiki_his.txt", "pittsgov.txt",
 
 # URL_LIST = [trustarts_url, carnegie_museum_url,heinzhistory_url,thefrick_url,visitpitts_festival_url,pickleburgh_url,pghtacofest_url]
 
-URL_LIST = [carnegie_museum_url]
+URL_LIST = [littleitaly_url]
 
 MAX_PAGES = 30   # How many subpages to crawl
 CHUNK_SIZE = 500
 OVERLAP = 50
 CHUNK_MIN_LEN = 50  # The minimum length of chunks to accpet
-OUT_JSON = "data/chunks_normal.jsonl"
+OUT_JSON = "data/chunks_test.jsonl"
 
 # ============ Step 1: Download the Website ============
 def fetch_page(url):

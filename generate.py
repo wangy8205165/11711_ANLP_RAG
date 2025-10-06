@@ -72,9 +72,9 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
 
 def main():
     # 1. Load chunk and embedding
-    chunk_map = load_chunks("data/chunks_littleItaly.jsonl")
-    index = build_faiss_index("index/embeddings_littleItaly.npy")
-    ids = np.load("index/ids_littleItaly.npy", allow_pickle=True)
+    chunk_map = load_chunks("data/chunks_test.jsonl")
+    index = build_faiss_index("index/embeddings_test.npy")
+    ids = np.load("index/ids_test.npy", allow_pickle=True)
     embed_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
     # 2. load the questions
