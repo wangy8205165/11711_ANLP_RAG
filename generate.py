@@ -94,6 +94,8 @@ def main():
         query_embs = embed_queries(embed_model, [q])
         retrieved = search(index, query_embs, ids, chunk_map, top_k=TOP_K)[0]  # 
 
+        print(f"retrieved information is:{retrieved}")
+
         # get the answers
         ans = generate_answer(llm, q, retrieved)
         results[str(qi)] = ans
