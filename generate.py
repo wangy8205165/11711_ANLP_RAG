@@ -59,7 +59,7 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
         {"role":"user", "content":prompt}
     ]
 
-    outputs = llm_pipe(prompt, max_new_tokens=64, do_sample=False) # Call the model to generate output
+    outputs = llm_pipe(message, max_new_tokens=64, do_sample=False) # Call the model to generate output
     # answer = outputs[0]["generated_text"].split("CONTEXT:")[-1].strip()
     # lines = answer.splitlines()
     # final = lines[-1].strip() if lines else answer
