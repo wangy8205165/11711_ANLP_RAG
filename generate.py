@@ -14,15 +14,11 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # --------------------------
 
 # Construct Template Prompt
-PROMPT_TEMPLATE = """You are a concise and factual assistant.
-Answer the question based only on the CONTEXT below.
-If the answer cannot be found in the context, say "N/A".
+PROMPT_TEMPLATE = """
+Answer the question based only on the CONTEXT below. If the answer cannot be found in the context, say "N/A".
 Keep your answer short (within 30 words).
-
-QUESTION: {question}
-
-CONTEXT:
-{context}
+QUESTION:{question}
+CONTEXT: {context}
 """
 
 # def load_questions(path="data/question.txt"):
@@ -57,6 +53,12 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
     context = "\n\n".join(ctxs)
 
     prompt = PROMPT_TEMPLATE.format(question=question, context=context)
+
+    message = [
+        {"role": "system", "content":"You are a concise and factual assistant."},
+        {"role":"user", "content":prompt}
+    ]
+
     outputs = llm_pipe(prompt, max_new_tokens=64, do_sample=False) # Call the model to generate output
     # answer = outputs[0]["generated_text"].split("CONTEXT:")[-1].strip()
     # lines = answer.splitlines()
@@ -64,7 +66,7 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
     # truncate
     # final = " ".join(final.split()[:20])
 
-    answer = outputs[0]["generated_text"]
+    answer = outputs[0]["generated_text"][-1]
 
     return answer
 
