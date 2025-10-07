@@ -32,7 +32,7 @@ TOP_K = 3                                       # Many top answers will be used
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CHUNK_PATH = f"data/chunks_{args.dataset}.jsonl"
 IDX_PATH = f"index/ids_{args.dataset}.npy"
-EMB_PATH = f"index/ids_{args.dataset}.npy"
+EMB_PATH = f"index/embeddings_{args.dataset}.npy"
 EMBED_MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
 QUESTION_PATH = f"data/test/question_{args.dataset}"
 ALPHA = 0.6 # Weight coefficient for weighted averaging
@@ -85,12 +85,6 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
     ]
 
     outputs = llm_pipe(message, max_new_tokens=64, do_sample=False) # Call the model to generate output
-    # answer = outputs[0]["generated_text"].split("CONTEXT:")[-1].strip()
-    # lines = answer.splitlines()
-    # final = lines[-1].strip() if lines else answer
-    # truncate
-    # final = " ".join(final.split()[:20])
-
     answer = outputs[0]["generated_text"][-1]['content']
 
     return answer
@@ -98,7 +92,6 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
 def main():
     # ===============  1. Load necessary components ====================
     chunk_map = load_chunks(CHUNK_PATH)
-    index = build_faiss_index(EMB_PATH)
     ids = np.load(IDX_PATH, allow_pickle=True)
     questions = load_questions(QUESTION_PATH)
     llm = build_llm_pipeline(MODEL_ID, DEVICE)
@@ -147,9 +140,7 @@ def main():
         else:
             raise ValueError(f"Unsupported mode: {args.mode}")
         print(f"retrieved information is: {retrieved}")
-
-
-        
+  
         # Embed the question and retrieve
         query_embs = embed_queries(embed_model, [q])
         retrieved = dense_search(index, query_embs, ids, chunk_map, top_k=TOP_K)[0]  # 

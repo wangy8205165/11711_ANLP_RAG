@@ -5,11 +5,11 @@ from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
 
 # ---------- Configuration ----------
-CHUNKS_PATH = "data/chunks_normal.jsonl"
-EMB_PATH = "index/embeddings.npy"
-IDS_PATH = "index/ids.npy"
+CHUNKS_PATH = "data/chunks_littleItaly.jsonl"
+EMB_PATH = "index/embeddings_littleItaly.npy"
+IDS_PATH = "index/ids_littleItaly.npy"
 # QUESTIONS_PATH = "data/question.txt"
-QUESTIONS_PATH = "data/test/question_test.txt"
+QUESTIONS_PATH = "data/test/question_littleItaly.txt"
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 TOP_K = 5  # How many answers will be retrieved
 # --------------------------
