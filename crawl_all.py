@@ -39,22 +39,23 @@ mlb_url = "https://www.mlb.com/pirates"
 nhl_url = "https://www.nhl.com/penguins/"
 steeler_url = "https://www.steelers.com/"
 
-txt_names = ["wiki.txt", "wiki_his.txt", "pittsgov.txt",
-             "britannica.txt", "visitpitts.txt","cmu.txt",
-             "pittseven.txt", "downtown_pitts.txt","pghcitypaper.txt",
-             "event_cmu.txt","event_cmu2.txt","pitsymphony.txt"
-             ]
+# txt_names = ["wiki.txt", "wiki_his.txt", "pittsgov.txt",
+#              "britannica.txt", "visitpitts.txt","cmu.txt",
+#              "pittseven.txt", "downtown_pitts.txt","pghcitypaper.txt",
+#              "event_cmu.txt","event_cmu2.txt","pitsymphony.txt"
+#              ]
 
 
 # URL_LIST = [trustarts_url, carnegie_museum_url,heinzhistory_url,thefrick_url,visitpitts_festival_url,pickleburgh_url,pghtacofest_url]
 
-URL_LIST = [littleitaly_url]
-
-MAX_PAGES = 30   # How many subpages to crawl
+URL_LIST = [carnegie_museum_url]
+MAX_DEPTH = 2
+MAX_PAGES = 50   # How many subpages to crawl
 CHUNK_SIZE = 500
 OVERLAP = 50
 CHUNK_MIN_LEN = 50  # The minimum length of chunks to accpet
-OUT_JSON = "data/chunks_test.jsonl"
+OUT_JSON = "data/chunks_carnegie_museum.jsonl"
+OUT_FILE_TXT = "raw_text/carnegie_museum.txt"
 
 # ============ Step 1: Download the Website ============
 def fetch_page(url):
@@ -124,18 +125,23 @@ def crawl_site(seed_url,counter):
     # domain = urlparse(seed_url).netloc.replace("www.", "")
     domain = urlparse(seed_url).netloc
     # file_name = domain.split(".")[1]
-    out_file = f"{domain}.txt"
+    out_file = OUT_FILE_TXT
     open(out_file, "w").close() # Clear all the content in the txt file
     print(f"\n[START] Crawling site: {domain}")
-    print(f"[INFO] Output file: {out_file}\n")
+    print(f"[INFO] Output file: {OUT_FILE_TXT}\n")
 
-    visited = set()
-    to_visit = [seed_url]
+    visited =set ()
+    to_visit = [(seed_url, 1)]
+
+
+
+    # visited = set()
+    # to_visit = [seed_url]
     collected_texts = []
 
     pages_crawled = 0
     while to_visit and pages_crawled < MAX_PAGES:
-        url = to_visit.pop(0)
+        url,depth = to_visit.pop(0)
         if url in visited:
             continue
         visited.add(url)
@@ -162,11 +168,12 @@ def crawl_site(seed_url,counter):
         counter = save_chunks(chunks, url, counter)
 
         # extract the new links 
-        new_links = extract_links(html, url, domain)
-        # print(f"new links: {new_links}")
-        for link in new_links:
-            if link not in visited and link not in to_visit:
-                to_visit.append(link)
+        if depth < MAX_DEPTH:
+            new_links = extract_links(html, url, domain)
+            # print(f"new links: {new_links}")
+            for link in new_links:
+                if link not in visited and all(link != l for l, _ in to_visit):
+                    to_visit.append((link, depth+1))
 
     print(f"[DONE] {domain} -> Crawled {pages_crawled} unique pages.\n")
 
