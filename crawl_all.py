@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import re, json, os
 from urllib.parse import urljoin, urlparse
 
-from torch import chunk
+# from torch import chunk
 
 wikipedia_url = "https://en.wikipedia.org/wiki/Pittsburgh"
 wikipediahistory_url = "https://en.wikipedia.org/wiki/Pittsburgh"

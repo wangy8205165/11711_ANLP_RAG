@@ -17,7 +17,7 @@ import argparse
 parser = argparse.ArgumentParser(description="Please enter the retrieve mode to use and dataset to test")
 parser.add_argument("--mode", type=str, required=True,help="Specify retrieve mode: spare, dense, weighted, rrf")
 parser.add_argument("--dataset", type=str, required=True,help="Please enter the dataset to test")
-
+parser.add_argument("topk", type=int, required=True, help="Please enter Top K you want to use")
 args = parser.parse_args()
 
 print(f"We will be using {args.mode} for retrieving!\n")
@@ -28,7 +28,7 @@ print(f"We will be testing {args.dataset}!\n")
 # MODEL_ID = "meta-llama/Llama-3.1-8B-Instruct"   # Choose the model
 MODEL_ID = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 MAX_CONTEXT_CHARS = 3000                        # Control the length of context
-TOP_K = 3                                       # Many top answers will be used
+TOP_K = args.topk                                      # Many top answers will be used
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CHUNK_PATH = f"data/chunks_{args.dataset}.jsonl"
 IDX_PATH = f"index/ids_{args.dataset}.npy"
