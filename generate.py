@@ -34,7 +34,7 @@ CHUNK_PATH = f"data/chunks_{args.dataset}.jsonl"
 IDX_PATH = f"index/ids_{args.dataset}.npy"
 EMB_PATH = f"index/embeddings_{args.dataset}.npy"
 EMBED_MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
-QUESTION_PATH = f"data/test/question_{args.dataset}"
+QUESTION_PATH = f"data/test/question_{args.dataset}.txt"
 ALPHA = 0.6 # Weight coefficient for weighted averaging
 # ===================================================================
 
