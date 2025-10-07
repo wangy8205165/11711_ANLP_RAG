@@ -51,7 +51,7 @@ def build_embeddings(
     ids  = np.array(ids)
 
     # Save the results
-    np.save(os.path.join(out_dir, "embeddings_Italy.npy"), embs)
+    np.save(os.path.join(out_dir, "embeddings_littleItaly.npy"), embs)
     np.save(os.path.join(out_dir, "ids_littleItaly.npy"), ids)
     print(f"Saved {embs.shape[0]} embeddings to {out_dir}/")
 
