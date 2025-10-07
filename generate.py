@@ -127,14 +127,14 @@ def main():
         elif args.mode == "weighted":
             query_embs = embed_queries(embed_model, [q])
             dense_res = dense_search(index, query_embs, ids, chunk_map, top_k=TOP_K)
-            sparse_res = search_bm25(bm25, bm25_index, chunk_map, [q],top_k=TOP_K)[0]
+            sparse_res = search_bm25(bm25, chunk_map, bm25_index, [q],top_k=TOP_K)[0]
             retrieved = weighted_average_fusion(dense_res, sparse_res, chunk_map, alpha=ALPHA, top_k=TOP_K)[0]
 
         # === reciprocal rank fusion ===
         elif args.mode == "rrf":
             query_embs = embed_queries(embed_model, [q])
             dense_res = dense_search(index, query_embs, ids, chunk_map, top_k=TOP_K)
-            sparse_res = search_bm25(bm25_index, q, chunk_map, top_k=TOP_K)
+            sparse_res = search_bm25(bm25, chunk_map, bm25_index, [q],top_k=TOP_K)[0]
             retrieved = reciprocal_rank_fusion(dense_res, sparse_res, chunk_map, top_k=TOP_K)[0]
 
         else:
