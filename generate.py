@@ -121,7 +121,7 @@ def main():
 
         # ======= sparse ============
         elif args.mode == "sparse":
-            retrieved = search_bm25(bm25, bm25_index, chunk_map, [q],top_k=TOP_K)[0]
+            retrieved = search_bm25(bm25, chunk_map, bm25_index, [q],top_k=TOP_K)[0]
 
         # === weighted average fusion ===
         elif args.mode == "weighted":
