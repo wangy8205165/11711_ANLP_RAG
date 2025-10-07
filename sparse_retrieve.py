@@ -35,7 +35,7 @@ def search_bm25(bm25, chunk_map, id_list, questions, top_k=5):
 
         one_query_results = []
         for rank, i in enumerate(top_idx, 1):
-            cid = id_list[i]
+            cid = id_list[int(i)]
             d = chunk_map[cid]
             one_query_results.append({
                 "rank": rank,
