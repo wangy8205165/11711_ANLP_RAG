@@ -19,7 +19,7 @@
 # print(data.shape)
 # print(data)
 
-from retrieve import QUESTIONS_PATH
+from dense_retrieve import QUESTIONS_PATH
 
 with open(QUESTIONS_PATH, "r", encoding="utf-8") as f:
     questions = [line.strip() for line in f if line.strip()]

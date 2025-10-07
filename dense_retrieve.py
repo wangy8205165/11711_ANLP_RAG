@@ -45,7 +45,7 @@ def embed_queries(model, questions):
     ).astype("float32")
     return q_embs
 
-def search(index, query_embs, ids, chunk_map, top_k=5):
+def dense_search(index, query_embs, ids, chunk_map, top_k=5):
     """Search similar text using FAISS"""
     D, I = index.search(query_embs, top_k)
     results = []
@@ -90,7 +90,7 @@ def main():
     query_embs = embed_queries(model, questions)
 
     # 6. Index
-    results = search(index, query_embs, ids, chunk_map, TOP_K)
+    results = dense_search(index, query_embs, ids, chunk_map, TOP_K)
 
     # 7. output
     output_path = "retrieval_info.txt"

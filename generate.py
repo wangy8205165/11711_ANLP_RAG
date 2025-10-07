@@ -1,9 +1,27 @@
+from ctypes.wintypes import LANGID
 import json
+from numpy import require
 import torch
 import transformers
 # from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 from sentence_transformers import SentenceTransformer
-from retrieve import build_faiss_index, load_chunks, embed_queries, search, load_questions  # import utility function as needed
+from dense_retrieve import build_faiss_index, load_chunks, embed_queries, dense_search, load_questions  # import utility function as needed
+from sparse_retrieve import build_bm25_index, search_bm25
+from hybrid_retrieve import weighted_average_fusion, reciprocal_rank_fusion
+
+import argparse
+
+
+# ================= Get the argument =============================
+parser = argparse.ArgumentParser(description="Please enter the retrieve mode to use and dataset to test")
+parser.add_argument("--mode", type=str, required=True,help="Specify retrieve mode: spare, dense, weighted, rrf")
+parser.add_argument("--dataset", type=str, require=True,help="Please enter the dataset to test")
+
+args = parser.parse_args()
+
+print(f"We will be using {args.mode} for retrieving!\n")
+print(f"We will be testing {args.dataset}!\n")
+
 
 #  ================== Configuration ==================================
 # MODEL_ID = "meta-llama/Llama-3.1-8B-Instruct"   # Choose the model
@@ -11,7 +29,13 @@ MODEL_ID = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 MAX_CONTEXT_CHARS = 3000                        # Control the length of context
 TOP_K = 3                                       # Many top answers will be used
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-# --------------------------
+CHUNK_PATH = f"data/chunks_{args.dataset}.jsonl"
+IDX_PATH = f"index/ids_{args.dataset}.npy"
+EMB_PATH = f"index/ids_{args.dataset}.npy"
+EMBED_MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
+QUESTION_PATH = f"data/test/question_{args.dataset}"
+ALPHA = 0.6 # Weight coefficient for weighted averaging
+# ===================================================================
 
 # Construct Template Prompt
 PROMPT_TEMPLATE = """
@@ -66,33 +90,68 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
     # truncate
     # final = " ".join(final.split()[:20])
 
-    answer = outputs[0]["generated_text"][-1]
+    answer = outputs[0]["generated_text"][-1]['content']
 
     return answer
 
 def main():
-    # 1. Load chunk and embedding
-    chunk_map = load_chunks("data/chunks_littleItaly.jsonl")
-    index = build_faiss_index("index/embeddings_littleItaly.npy")
-    ids = np.load("index/ids_littleItaly.npy", allow_pickle=True)
-    embed_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-
-    # 2. load the questions
-    questions = load_questions("data/test/question_test.txt")
-
-    # 3. load LLM
+    # ===============  1. Load necessary components ====================
+    chunk_map = load_chunks(CHUNK_PATH)
+    index = build_faiss_index(EMB_PATH)
+    ids = np.load(IDX_PATH, allow_pickle=True)
+    questions = load_questions(QUESTION_PATH)
     llm = build_llm_pipeline(MODEL_ID, DEVICE)
-
-    # 4. For each question, retrieve, and generate answer based on retrieved info
     results = {}
+
+    
+    # ===============  2. Initialzie retrieval models ====================
+    if args.mode in ["dense", "weighted", "rrf"]:
+        print("→ Loading dense embeddings...")
+        index = build_faiss_index(EMB_PATH)
+        ids = np.load(IDX_PATH, allow_pickle=True)
+        embed_model = SentenceTransformer(EMBED_MODEL_ID) 
+    if args.mode in ["sparse", "weighted", "rrf"]:
+        print("→ Building BM25 index...")
+        bm25, bm25_index = build_bm25_index(chunk_map)
+
+    # ===============  3. retrieval loops ====================
     for qi, q in enumerate(questions, 1):
         print("="*80)
         print(f"[Q{qi}] {q}")
-        # q_emb = embed_model.encode([q], convert_to_numpy=True, normalize_embeddings=True).astype("float32")
 
+
+        # =======  dense ============
+        if args.mode == "dense":
+            query_embs = embed_queries(embed_model, [q])
+            retrieved = dense_search(index, query_embs, ids, chunk_map, top_k=TOP_K)[0]
+
+        # ======= sparse ============
+        elif args.mode == "sparse":
+            retrieved = search_bm25(bm25, bm25_index, chunk_map, [q],top_k=TOP_K)[0]
+
+        # === weighted average fusion ===
+        elif args.mode == "weighted":
+            query_embs = embed_queries(embed_model, [q])
+            dense_res = dense_search(index, query_embs, ids, chunk_map, top_k=TOP_K)
+            sparse_res = search_bm25(bm25, bm25_index, chunk_map, [q],top_k=TOP_K)[0]
+            retrieved = weighted_average_fusion(dense_res, sparse_res, chunk_map, alpha=ALPHA, top_k=TOP_K)[0]
+
+        # === reciprocal rank fusion ===
+        elif args.mode == "rrf":
+            query_embs = embed_queries(embed_model, [q])
+            dense_res = dense_search(index, query_embs, ids, chunk_map, top_k=TOP_K)
+            sparse_res = search_bm25(bm25_index, q, chunk_map, top_k=TOP_K)
+            retrieved = reciprocal_rank_fusion(dense_res, sparse_res, chunk_map, top_k=TOP_K)[0]
+
+        else:
+            raise ValueError(f"Unsupported mode: {args.mode}")
+        print(f"retrieved information is: {retrieved}")
+
+
+        
         # Embed the question and retrieve
         query_embs = embed_queries(embed_model, [q])
-        retrieved = search(index, query_embs, ids, chunk_map, top_k=TOP_K)[0]  # 
+        retrieved = dense_search(index, query_embs, ids, chunk_map, top_k=TOP_K)[0]  # 
 
         print(f"retrieved information is:{retrieved}")
 
