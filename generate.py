@@ -17,7 +17,7 @@ import argparse
 parser = argparse.ArgumentParser(description="Please enter the retrieve mode to use and dataset to test")
 parser.add_argument("--mode", type=str, required=True,help="Specify retrieve mode: spare, dense, weighted, rrf")
 parser.add_argument("--dataset", type=str, required=True,help="Please enter the dataset to test")
-parser.add_argument("topk", type=int, required=True, help="Please enter Top K you want to use")
+parser.add_argument("--topk", type=int, required=True, help="Please enter Top K you want to use")
 args = parser.parse_args()
 
 print(f"We will be using {args.mode} for retrieving!\n")
