@@ -30,13 +30,13 @@ MODEL_ID = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 MAX_CONTEXT_CHARS = 3000                        # Control the length of context
 TOP_K = args.topk                                      # Many top answers will be used
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-CHUNK_PATH = f"data/chunks_{args.dataset}.jsonl"
+CHUNK_PATH = f"data/chunks/chunks_{args.dataset}.jsonl"
 IDX_PATH = f"index/ids_{args.dataset}.npy"
 EMB_PATH = f"index/embeddings_{args.dataset}.npy"
 EMBED_MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
 QUESTION_PATH = f"data/test/question_{args.dataset}.txt"
 ALPHA = 0.6 # Weight coefficient for weighted averaging
-REFERENCE_PATH = f"data/reference_{args.dataset}.json"
+REFERENCE_PATH = f"data/reference/reference_{args.dataset}.json"
 # ===================================================================
 
 # Construct Template Prompt
