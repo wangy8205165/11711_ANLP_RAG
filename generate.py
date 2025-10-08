@@ -9,7 +9,7 @@ from sentence_transformers import SentenceTransformer
 from dense_retrieve import build_faiss_index, load_chunks, embed_queries, dense_search, load_questions  # import utility function as needed
 from sparse_retrieve import build_bm25_index, search_bm25
 from hybrid_retrieve import weighted_average_fusion, reciprocal_rank_fusion
-
+import json
 import argparse
 
 
@@ -36,25 +36,44 @@ EMB_PATH = f"index/embeddings_{args.dataset}.npy"
 EMBED_MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
 QUESTION_PATH = f"data/test/question_{args.dataset}.txt"
 ALPHA = 0.6 # Weight coefficient for weighted averaging
+REFERENCE_PATH = f"data/reference_{args.dataset}.json"
 # ===================================================================
 
 # Construct Template Prompt
+# PROMPT_TEMPLATE = """
+# Answer the question based only on the CONTEXT below. If the answer cannot be found in the context, say "N/A".
+# Keep your answer short (within 30 words).
+# QUESTION:{question}
+# CONTEXT: {context}
+# """
+
 PROMPT_TEMPLATE = """
-Answer the question based only on the CONTEXT below. If the answer cannot be found in the context, say "N/A".
-Keep your answer short (within 30 words).
-QUESTION:{question}
-CONTEXT: {context}
+Your task:
+1. Carefully read the question and the retrieved information below.
+2. Determine whether the retrieved information contains relevant or correct answers.
+3. If it does, use it to support your answer and cite it briefly.
+4. If it does not, rely on your own knowledge to answer accurately.
+5. Do not mix irrelevant facts from the retrieved text.
+Question:
+{question}
+Retrieved Information:
+{context}
+Answer (clearly indicate if your answer is based on retrieval or your own knowledge):
 """
 
-# def load_questions(path="data/question.txt"):
-#     with open(path, "r", encoding="utf-8") as f:
-#         return [line.strip() for line in f if line.strip()]
-# def build_llm_pipeline(model_id=MODEL_ID, device=DEVICE):
-#     print(f"Loading LLM model: {model_id}")
-#     tok = AutoTokenizer.from_pretrained(model_id)
-#     model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=torch.float16, device_map="auto")
-#     pipe = pipeline("text-generation", model=model, tokenizer=tok, device_map="auto")
-#     return pipe
+# role_message = "You are a concise and factual assistant."
+role_message = "You are an expert assistant with access to external retrieved documents."
+
+
+def load_reference_answers(path):
+    """Load reference answers from JSON"""
+    with open(path, "r", encoding="utf-8") as f:
+        refs = json.load(f)
+    ref_map = {}
+    for d in refs:
+        ref_map.update(d)
+    return ref_map
+
 
 def build_llm_pipeline(model_id=MODEL_ID, device=DEVICE):
     pipeline = transformers.pipeline(
@@ -80,7 +99,7 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
     prompt = PROMPT_TEMPLATE.format(question=question, context=context)
 
     message = [
-        {"role": "system", "content":"You are a concise and factual assistant."},
+        {"role": "system", "content": role_message },
         {"role":"user", "content":prompt}
     ]
 
@@ -96,6 +115,8 @@ def main():
     questions = load_questions(QUESTION_PATH)
     llm = build_llm_pipeline(MODEL_ID, DEVICE)
     results = {}
+    reference_answers = load_reference_answers(REFERENCE_PATH)
+
 
     
     # ===============  2. Initialzie retrieval models ====================
@@ -145,7 +166,12 @@ def main():
         ans = generate_answer(llm, q, retrieved)
         results[str(qi)] = ans
 
-        print(f"→ Answer: {ans}\n")
+        print(f"→ LLM Answer: {ans}\n")
+
+        ref_ans = reference_answers.get(str(qi), "(No reference found)")
+        print(f"→ Reference Answer: {ref_ans}\n")
+        print("=" * 80)
+        
 
     # 5. save the results
     with open("system_outputs/system_output_1.json", "w", encoding="utf-8") as f:

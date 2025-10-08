@@ -73,6 +73,15 @@ def build_embeddings(
     np.save(os.path.join(out_dir, OUT_IDX), ids)
     print(f"Saved {embs.shape[0]} embeddings to {out_dir}/")
 
+    embeddings = np.load(f"index/embeddings_{args.chunk}")
+    index = np.load(f"index/ids_{args.chunk}")
+
+
+    print("="*80)
+    print("VERIFY:")
+    print(f"embedding has shape: {embeddings.shape}")
+    print(f"index has shape: {index.shape}")    
+
 if __name__ == "__main__":
     build_embeddings(
         chunks_path=CHUNK_PATH,          # File Path
