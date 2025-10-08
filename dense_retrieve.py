@@ -17,8 +17,6 @@ MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 TOP_K = 5  # How many answers will be retrieved
 # --------------------------
 
-model = BGEM3FlagModel(MODEL, use_fp16=True)
-
 def load_chunks(path):
     """Load chunk data, return a dictionary: chunk_id -> text"""
     chunk_map = {}
@@ -93,7 +91,9 @@ def main():
     #     questions = [line.strip() for line in f if line.strip()]
     questions = load_questions(QUESTIONS_PATH)
     # 5. Embed the query
-    model = SentenceTransformer(MODEL_NAME)
+    # model = SentenceTransformer(MODEL_NAME)
+    model = BGEM3FlagModel(MODEL, use_fp16=True)
+
     query_embs = embed_queries(model, questions)
 
     # 6. Index
