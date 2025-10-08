@@ -3,6 +3,24 @@ import numpy as np
 import os
 from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
+import argparse
+
+# from generate import EMB_PATH
+
+# =============== Get Args =========================
+parser = argparse.ArgumentParser(description="Please enter the retrieve mode to use and dataset to test")
+parser.add_argument("--chunk", type=str, required=True,help="Pleaes select which chunk data to embed")
+parser.add_argument("--model",default="sentence-transformers/all-MiniLM-L6-v2",type=str,help="Please enter the embedding model to use")
+args = parser.parse_args()
+
+
+# ============== Configurations =====================
+CHUNK_PATH = f"data/chunks/chunks_{args.chunk}.jsonl"
+MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+OUT_DIR = "index"
+OUT_EMB = f"embeddings_{args.chunk}.npy"
+OUT_IDX = f"ids_{args.chunk}.npy"
+
 
 def load_chunks(jsonl_path):
     """read chunks.jsonl line by line"""
@@ -15,9 +33,9 @@ def load_chunks(jsonl_path):
 
 def build_embeddings(
         # chunks_path="data/chunks_normal.jsonl",
-        chunks_path="data/chunks_littleItaly.jsonl",
-        model_name="sentence-transformers/all-MiniLM-L6-v2",
-        out_dir="index",
+        chunks_path=CHUNK_PATH,
+        model_name=MODEL,
+        out_dir=OUT_DIR,
         batch_size=128,
         normalize=True):
     
@@ -51,15 +69,15 @@ def build_embeddings(
     ids  = np.array(ids)
 
     # Save the results
-    np.save(os.path.join(out_dir, "embeddings_littleItaly.npy"), embs)
-    np.save(os.path.join(out_dir, "ids_littleItaly.npy"), ids)
+    np.save(os.path.join(out_dir, OUT_EMB), embs)
+    np.save(os.path.join(out_dir, OUT_IDX), ids)
     print(f"Saved {embs.shape[0]} embeddings to {out_dir}/")
 
 if __name__ == "__main__":
     build_embeddings(
-        chunks_path="data/chunks_littleItaly.jsonl",          # File Path
-        model_name="sentence-transformers/all-MiniLM-L6-v2",
-        out_dir="index",                     # Output Directory
+        chunks_path=CHUNK_PATH,          # File Path
+        model_name=MODEL,
+        out_dir=OUT_DIR,                     # Output Directory
         batch_size=128,
         normalize=True
     )
