@@ -40,26 +40,26 @@ REFERENCE_PATH = f"data/reference/reference_{args.dataset}.json"
 # ===================================================================
 
 # Construct Template Prompt
-# PROMPT_TEMPLATE = """
-# Answer the question based only on the CONTEXT below. If the answer cannot be found in the context, say "N/A".
-# Keep your answer short (within 30 words).
-# QUESTION:{question}
-# CONTEXT: {context}
-# """
-
 PROMPT_TEMPLATE = """
-Your task:
-1. Carefully read the question and the retrieved information below.
-2. Determine whether the retrieved information contains relevant or correct answers.
-3. If it does, use it to support your answer and cite it briefly.
-4. If it does not, rely on your own knowledge to answer accurately.
-5. Do not mix irrelevant facts from the retrieved text.
-Question:
-{question}
-Retrieved Information:
-{context}
-Answer (clearly indicate if your answer is based on retrieval or your own knowledge):
+Answer the question based only on the CONTEXT below. If the answer cannot be found in the context, say "N/A".
+Keep your answer short (within 30 words).
+QUESTION:{question}
+CONTEXT: {context}
 """
+
+# PROMPT_TEMPLATE = """
+# Your task:
+# 1. Carefully read the question and the retrieved information below.
+# 2. Determine whether the retrieved information contains relevant or correct answers.
+# 3. If it does, use it to support your answer and cite it briefly.
+# 4. If it does not, rely on your own knowledge to answer accurately.
+# 5. Do not mix irrelevant facts from the retrieved text.
+# Question:
+# {question}
+# Retrieved Information:
+# {context}
+# Answer (clearly indicate if your answer is based on retrieval or your own knowledge):
+# """
 
 # role_message = "You are a concise and factual assistant."
 role_message = "You are an expert assistant with access to external retrieved documents."
