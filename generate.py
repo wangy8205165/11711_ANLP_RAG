@@ -11,6 +11,7 @@ from sparse_retrieve import build_bm25_index, search_bm25
 from hybrid_retrieve import weighted_average_fusion, reciprocal_rank_fusion
 import json
 import argparse
+from FlagEmbedding import BGEM3FlagModel
 
 
 # ================= Get the argument =============================
@@ -33,7 +34,8 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CHUNK_PATH = f"data/chunks/chunks_{args.dataset}.jsonl"
 IDX_PATH = f"index/ids_{args.dataset}.npy"
 EMB_PATH = f"index/embeddings_{args.dataset}.npy"
-EMBED_MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
+# EMBED_MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
+EMBED_MODEL_ID = "BAAI/bge-m3"
 QUESTION_PATH = f"data/test/question_{args.dataset}.txt"
 ALPHA = 0.6 # Weight coefficient for weighted averaging
 REFERENCE_PATH = f"data/reference/reference_{args.dataset}.json"
@@ -124,7 +126,9 @@ def main():
         print("→ Loading dense embeddings...")
         index = build_faiss_index(EMB_PATH)
         ids = np.load(IDX_PATH, allow_pickle=True)
-        embed_model = SentenceTransformer(EMBED_MODEL_ID) 
+        # embed_model = SentenceTransformer(EMBED_MODEL_ID) 
+        embed_model = BGEM3FlagModel(EMBED_MODEL_ID, use_fp16=True)
+
     if args.mode in ["sparse", "weighted", "rrf"]:
         print("→ Building BM25 index...")
         bm25, bm25_index = build_bm25_index(chunk_map)
