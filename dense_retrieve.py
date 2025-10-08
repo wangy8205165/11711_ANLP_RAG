@@ -93,7 +93,6 @@ def main():
     # 5. Embed the query
     # model = SentenceTransformer(MODEL_NAME)
     model = BGEM3FlagModel(MODEL, use_fp16=True)
-
     query_embs = embed_queries(model, questions)
 
     # 6. Index
