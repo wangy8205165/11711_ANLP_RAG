@@ -4,6 +4,8 @@ import os
 from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
 import argparse
+from FlagEmbedding import BGEM3FlagModel
+import faiss 
 
 # from generate import EMB_PATH
 
@@ -16,7 +18,8 @@ args = parser.parse_args()
 
 # ============== Configurations =====================
 CHUNK_PATH = f"data/chunks/chunks_{args.chunk}.jsonl"
-MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+# MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+MODEL = "BAAI/bge-m3"
 OUT_DIR = "index"
 OUT_EMB = f"embeddings_{args.chunk}.npy"
 OUT_IDX = f"ids_{args.chunk}.npy"
@@ -44,7 +47,9 @@ def build_embeddings(
 
     # Load the model
     print(f"Loading embedding model: {model_name}")
-    model = SentenceTransformer(model_name)
+    # model = SentenceTransformer(model_name)
+    model = BGEM3FlagModel(MODEL, use_fp16=True)
+
 
     # Read the chunks
     chunks = load_chunks(chunks_path)
@@ -57,12 +62,15 @@ def build_embeddings(
     all_embs = []
     for i in tqdm(range(0, len(texts), batch_size)):
         batch_texts = texts[i:i + batch_size]
-        emb = model.encode(
-            batch_texts,
-            show_progress_bar=False,
-            convert_to_numpy=True,
-            normalize_embeddings=normalize  # Normalize for cosine similarity
-        )
+        # emb = model.encode(
+        #     batch_texts,
+        #     show_progress_bar=False,
+        #     convert_to_numpy=True,
+        #     normalize_embeddings=normalize  # Normalize for cosine similarity
+        # )
+        emb = model.encode(batch_texts, batch_size=64)["dense_vecs"].astype("float32")  # [N,1024]
+        faiss.normalize_L2(emb)
+
         all_embs.append(emb)
 
     embs = np.vstack(all_embs).astype("float32")

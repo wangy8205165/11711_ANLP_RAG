@@ -3,16 +3,21 @@ import numpy as np
 import json
 from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
+from FlagEmbedding import BGEM3FlagModel
+
 
 # ---------- Configuration ----------
 CHUNKS_PATH = "data/chunks_littleItaly.jsonl"
 EMB_PATH = "index/embeddings_littleItaly.npy"
 IDS_PATH = "index/ids_littleItaly.npy"
+MODEL = "BAAI/bge-m3"
 # QUESTIONS_PATH = "data/question.txt"
 QUESTIONS_PATH = "data/test/question_littleItaly.txt"
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 TOP_K = 5  # How many answers will be retrieved
 # --------------------------
+
+model = BGEM3FlagModel(MODEL, use_fp16=True)
 
 def load_chunks(path):
     """Load chunk data, return a dictionary: chunk_id -> text"""
@@ -38,11 +43,13 @@ def build_faiss_index(emb_path):
 
 def embed_queries(model, questions):
     """Turn the question into embedding"""
-    q_embs = model.encode(
-        questions,
-        convert_to_numpy=True,
-        normalize_embeddings=True
-    ).astype("float32")
+    # q_embs = model.encode(
+    #     questions,
+    #     convert_to_numpy=True,
+    #     normalize_embeddings=True
+    # ).astype("float32")
+    q_embs = model.encode(questions, batch_size=64)["dense_vecs"].astype("float32")  # [N,1024]
+    faiss.normalize_L2(q_embs)
     return q_embs
 
 def dense_search(index, query_embs, ids, chunk_map, top_k=5):
