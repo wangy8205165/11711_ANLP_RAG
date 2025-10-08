@@ -73,8 +73,8 @@ def build_embeddings(
     np.save(os.path.join(out_dir, OUT_IDX), ids)
     print(f"Saved {embs.shape[0]} embeddings to {out_dir}/")
 
-    embeddings = np.load(f"index/embeddings_{args.chunk}")
-    index = np.load(f"index/ids_{args.chunk}")
+    embeddings = np.load(f"index/embeddings_{args.chunk}.npy")
+    index = np.load(f"index/ids_{args.chunk}.npy")
 
 
     print("="*80)
