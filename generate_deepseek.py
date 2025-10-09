@@ -63,6 +63,7 @@ Question:
 Retrieved Information:
 {context}
 Answer (clearly indicate if your answer is based on retrieval or your own knowledge):
+Please show me your final answer, do not show your reasoning process. 
 """
 
 # role_message = "You are a concise and factual assistant."
