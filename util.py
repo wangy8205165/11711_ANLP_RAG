@@ -60,12 +60,12 @@ def generate_reference(txt_path, json_path):
 if __name__ == "__main__":
 
 
-    input_path = "data/chunks/chunks_thefrick_2.jsonl"
-    output_path = "data/chunks/chunks_thefrick.jsonl"
-    renumber_jsonl(input_path, output_path, width=3, prefix="")
-    print("处理完毕，总行数：", sum(1 for _ in open(output_path, 'r', encoding='utf-8')))
+    # input_path = "data/chunks/chunks_thefrick_2.jsonl"
+    # output_path = "data/chunks/chunks_thefrick.jsonl"
+    # renumber_jsonl(input_path, output_path, width=3, prefix="")
+    # print("处理完毕，总行数：", sum(1 for _ in open(output_path, 'r', encoding='utf-8')))
 
     
-    txt_path = "data/reference/reference_thefrick.txt"
-    json_path = "data/reference/reference_thefrick.json"
+    txt_path = "data/reference/reference_pghtacofest.txt"
+    json_path = "data/reference/reference_pghtacofest.json"
     generate_reference(txt_path,json_path)

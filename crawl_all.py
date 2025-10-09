@@ -48,14 +48,14 @@ steeler_url = "https://www.steelers.com/"
 
 # URL_LIST = [trustarts_url, carnegie_museum_url,heinzhistory_url,thefrick_url,visitpitts_festival_url,pickleburgh_url,pghtacofest_url]
 
-URL_LIST = [thefrick_url]
+URL_LIST = [pghtacofest_url]
 MAX_DEPTH = 2
 MAX_PAGES = 50   # How many subpages to crawl
 CHUNK_SIZE = 500
 OVERLAP = 50
 CHUNK_MIN_LEN = 50  # The minimum length of chunks to accpet
-OUT_JSON = "data/chunks_trustarts.jsonl"
-OUT_FILE_TXT = "raw_text/trustarts.txt"
+# OUT_JSON = "data/chunks_trustarts.jsonl"
+OUT_FILE_TXT = "raw_text/pghtacofest.txt"
 
 # ============ Step 1: Download the Website ============
 def fetch_page(url):
@@ -164,8 +164,8 @@ def crawl_site(seed_url,counter):
         pages_crawled += 1
         print(f"[SAVE] ({pages_crawled}) {url}")
 
-        chunks = chunk_text(text, CHUNK_SIZE, OVERLAP)
-        counter = save_chunks(chunks, url, counter)
+        # chunks = chunk_text(text, CHUNK_SIZE, OVERLAP)
+        # counter = save_chunks(chunks, url, counter)
 
         # extract the new links 
         if depth < MAX_DEPTH:
@@ -179,8 +179,8 @@ def crawl_site(seed_url,counter):
 
 # ============ Step 5: main pipeline ============
 def main():
-    if os.path.exists(OUT_JSON):
-        os.remove(OUT_JSON)  # Clear the old data
+    # if os.path.exists(OUT_JSON):
+    #     os.remove(OUT_JSON)  # Clear the old data
     counter = 0
     for site in URL_LIST:
         crawl_site(site,counter)
