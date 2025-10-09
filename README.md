@@ -30,25 +30,60 @@ We tested our system on Colab environments, so the following instruction will be
 ### Step 4-Running Embeddings:
 1. First step is to run embedding of the target chunk: ```!python embeder.py --chunk {dataset} --model```
 2. options for dataset are:
-- 
-- 
-- ...
+2.1 For single website or source of link, we have: 
+    - wikipeida
+    - wikihistory
+    - pittsgov
+    - britanica
+    - visitpitts
+    - pittstax
+    - cmu
+    - pitts_event
+    - downtownpitts
+    - pghcitypaper
+    - event_cmu
+    - event_cmu_2
+    - pittssymphony
+    - pittsopera
+    - trustarts
+    - carnegiemuseum
+    - heinzhistory
+    - thefrick
+    - visitpittsfestival
+    - pickleburgh
+    - pghtacofest
+    - pittsresweek
+    - littleitaly
+    - visitpitts_todo
+    - banana
+    - mlb
+    - nhl
+    - steeler
+2.2 For categories, we have:
+    - generalinfo
+    - events
+    - musicandculture
+    - food
+    - sports
+2.3 For the test dataset, we have:
+    - test
 3. options for embedding models are: 
-- 
-- 
-- 
+    - sentenec_transformer
+    - BAAI/bge-m3
+
 4. Example: ```!python embeder.py --chunk carnegiemuseum --model transformer-sentence```
 5. After running this, the corresponding embeddings ```embeddings_{dataset}.npy``` and ids ```ids_{dataset}.npy``` will be created under ```\index```. 
 
 ### Step 5-Running generation:
 1. Once you have embeddings and ids, now you can run RAG. 
 2. ```!python generate_deepseek.py --mode {retrieval method} --dataset {dataset} --topk {topk}```
-3. options for retrieval method:
+3. If you want to use llama-3.1m then run ```generate_llama3.py``` with the same arguments. 
+4. options for retrieval method:
     - dense
     - sparse
     - weighted
     - rrf
-4. options for dataset are the same as above. 
-5. topk is the number of top retrieved pieces of information to use. 
+5. options for dataset are the same as above. 
+6. topk is the number of top retrieved pieces of information to use. 
 
 ### Output
