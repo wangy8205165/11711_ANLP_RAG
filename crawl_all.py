@@ -48,7 +48,7 @@ steeler_url = "https://www.steelers.com/"
 
 # URL_LIST = [trustarts_url, carnegie_museum_url,heinzhistory_url,thefrick_url,visitpitts_festival_url,pickleburgh_url,pghtacofest_url]
 
-URL_LIST = [trustarts_url]
+URL_LIST = [thefrick_url]
 MAX_DEPTH = 2
 MAX_PAGES = 50   # How many subpages to crawl
 CHUNK_SIZE = 500
