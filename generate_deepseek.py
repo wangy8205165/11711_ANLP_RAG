@@ -120,13 +120,6 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
         answer = parts[1]
     return think,answer
 
-# def tokenization (model_id = MODEL_ID):
-#     tokenizer = AutoTokenizer.from_pretrained(model_id)
-#     model = AutoModelForCausalLM.from_pretrained(model_id)
-#     return tokenizer, model
-
-
-
 
 def main():
     # ===============  1. Load necessary components ====================
