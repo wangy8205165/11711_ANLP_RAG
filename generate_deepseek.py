@@ -110,8 +110,10 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
     
     llm_pipe(message)
 
+    print("="*80)
     outputs = llm_pipe(message, max_new_tokens=256, do_sample=False) # Call the model to generate output
-    answer = print(outputs[0]["generated_text"][-1]['content'])
+    print("="*80)
+    answer = outputs[0]["generated_text"][-1]
 
     return answer
 
