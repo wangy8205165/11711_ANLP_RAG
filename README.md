@@ -14,9 +14,9 @@ We tested our system on Colab environments, so the following instruction will be
 2. cd into the directory of this repo
 3. ```pip install -r requirements.txt```
 4. If you have any issues with environments, manually install following packages:
-- ```!pip install faiss-cpu```
-- ```!pip install rank-bm25```
-- ```!pip install FlagEmbedding==1.2.10```
+    - ```!pip install faiss-cpu```
+    - ```!pip install rank-bm25```
+    - ```!pip install FlagEmbedding==1.2.10```
 
 ### Step 2-Running Llama 3 requirements:
 1. If you want to run llama-3.1, get a permission on HuggingFace and create a token
@@ -30,7 +30,7 @@ We tested our system on Colab environments, so the following instruction will be
 ### Step 4-Running Embeddings:
 1. First step is to run embedding of the target chunk: ```!python embeder.py --chunk {dataset} --model```
 2. options for dataset are:
-2.1 For single website or source of link, we have: 
+#### For single website or source of link, we have: 
     - wikipeida
     - wikihistory
     - pittsgov
@@ -59,13 +59,13 @@ We tested our system on Colab environments, so the following instruction will be
     - mlb
     - nhl
     - steeler
-2.2 For categories, we have:
+#### For categories, we have:
     - generalinfo
     - events
     - musicandculture
     - food
     - sports
-2.3 For the test dataset, we have:
+#### For the test dataset, we have:
     - test
 3. options for embedding models are: 
     - sentenec_transformer
