@@ -30,7 +30,7 @@ print(f"We will be testing {args.dataset}!\n")
 # MODEL_ID = "meta-llama/Llama-3.1-8B-Instruct"   # Choose the model
 # MODEL_ID = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 MODEL_ID= "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B"
-MAX_CONTEXT_CHARS = 3000                        # Control the length of context
+MAX_CONTEXT_CHARS = 10000                        # Control the length of context
 TOP_K = args.topk                                      # Many top answers will be used
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CHUNK_PATH = f"data/chunks/chunks_{args.dataset}.jsonl"
@@ -91,6 +91,7 @@ def build_llm_pipeline(model_id=MODEL_ID, device=DEVICE):
     return pipeline
 
 
+
 def generate_answer(llm_pipe, question, retrieved_chunks):
     # Concatenate context
     ctxs, total_len = [], 0
@@ -111,12 +112,13 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
     
     llm_pipe(message)
 
-    print("="*80)
-    outputs = llm_pipe(message, max_new_tokens=256, do_sample=False) # Call the model to generate output
-    print("="*80)
-    answer = outputs[0]["generated_text"][-1]
-
-    return answer
+    outputs = llm_pipe(message, max_new_tokens=1000, do_sample=False) # Call the model to generate output
+    content = outputs[0]["generated_text"][-1]['content']
+    if "</think>" in content:  
+        parts = content.split("\n</think>\n\n")
+        think = parts[0]
+        answer = parts[1]
+    return think,answer
 
 # def tokenization (model_id = MODEL_ID):
 #     tokenizer = AutoTokenizer.from_pretrained(model_id)
@@ -184,10 +186,12 @@ def main():
   
         # get the answers
 
-        ans = generate_answer(llm, q, retrieved)
-        results[str(qi)] = ans
+        think, answer = generate_answer(llm, q, retrieved)
+        results[str(qi)] = answer
 
-        print(f"→ LLM Answer: {ans}\n")
+
+        print(f"→ LLM Reasoning: {think}\n")
+        print(f"→ LLM Answer: {answer}\n")
 
         ref_ans = reference_answers.get(str(qi), "(No reference found)")
         print(f"→ Reference Answer: {ref_ans}\n")
