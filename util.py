@@ -35,8 +35,27 @@ def renumber_jsonl(input_path, output_path, width=3, prefix=""):
             
             counter += 1
 
-if __name__ == "__main__":
-    input_path = "data/chunks/chunks_carnegie_museum.jsonl"
-    output_path = "data/chunks/chunks_carnegie_museum_2.jsonl"
-    renumber_jsonl(input_path, output_path, width=3, prefix="")
-    print("处理完毕，总行数：", sum(1 for _ in open(output_path, 'r', encoding='utf-8')))
+
+# 输入和输出文件路径
+txt_path = "data/reference/reference_trustart.txt"
+json_path = "data/reference/reference_trustarts.json"
+
+# 读取 txt 文件
+with open(txt_path, "r", encoding="utf-8") as f:
+    lines = [line.strip() for line in f if line.strip()]  # 去掉空行与换行符
+
+# 生成字典，键为序号（从1开始），值为对应行文字
+data = {str(i + 1): line for i, line in enumerate(lines)}
+
+# 写入 JSON 文件
+with open(json_path, "w", encoding="utf-8") as f:
+    json.dump([data], f, ensure_ascii=False, indent=4)
+
+print("✅ 已成功生成 JSON 文件:", json_path)
+
+
+# if __name__ == "__main__":
+    # input_path = "data/chunks/chunks_trustarts.jsonl"
+    # output_path = "data/chunks/chunks_trustarts_2.jsonl"
+    # renumber_jsonl(input_path, output_path, width=3, prefix="")
+    # print("处理完毕，总行数：", sum(1 for _ in open(output_path, 'r', encoding='utf-8')))

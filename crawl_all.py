@@ -48,14 +48,14 @@ steeler_url = "https://www.steelers.com/"
 
 # URL_LIST = [trustarts_url, carnegie_museum_url,heinzhistory_url,thefrick_url,visitpitts_festival_url,pickleburgh_url,pghtacofest_url]
 
-URL_LIST = [carnegie_museum_url]
+URL_LIST = [trustarts_url]
 MAX_DEPTH = 2
 MAX_PAGES = 50   # How many subpages to crawl
 CHUNK_SIZE = 500
 OVERLAP = 50
 CHUNK_MIN_LEN = 50  # The minimum length of chunks to accpet
-OUT_JSON = "data/chunks_carnegie_museum.jsonl"
-OUT_FILE_TXT = "raw_text/carnegie_museum.txt"
+OUT_JSON = "data/chunks_trustarts.jsonl"
+OUT_FILE_TXT = "raw_text/trustarts.txt"
 
 # ============ Step 1: Download the Website ============
 def fetch_page(url):
