@@ -81,9 +81,7 @@ We tested our system on Colab environments, so the following instruction will be
 3. options for embedding models are: 
     - sentenec-transformers
     - BAAI  
-    - Example: you can run ```!python embeder.py --model BAAI```. 
-
-4. Example: ```!python embeder.py --chunk carnegiemuseum --model transformer-sentence```
+4. Example: ```!python embeder.py --chunk carnegiemuseum --model sentence-transformers```
 5. After running this, the corresponding embeddings ```embeddings_{dataset}.npy``` and ids ```ids_{dataset}.npy``` will be created under ```\index```. 
 
 ### Step 5-Running generation:
