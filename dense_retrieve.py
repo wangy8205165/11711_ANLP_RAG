@@ -41,12 +41,12 @@ def build_faiss_index(emb_path):
 
 def embed_queries(model, questions):
     """Turn the question into embedding"""
-    # q_embs = model.encode(
-    #     questions,
-    #     convert_to_numpy=True,
-    #     normalize_embeddings=True
-    # ).astype("float32")
-    q_embs = model.encode(questions, batch_size=64)["dense_vecs"].astype("float32")  # [N,1024]
+    # sentence transformers
+    if isinstance(model, SentenceTransformer):
+        q_embs = model.encode(questions,convert_to_numpy=True,normalize_embeddings=True).astype("float32")
+    # BAAI
+    elif isinstance(model, BGEM3FlagModel):
+        q_embs = model.encode(questions, batch_size=64)["dense_vecs"].astype("float32")  # [N,1024]
     faiss.normalize_L2(q_embs)
     return q_embs
 

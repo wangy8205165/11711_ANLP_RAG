@@ -19,10 +19,13 @@ parser = argparse.ArgumentParser(description="Please enter the retrieve mode to 
 parser.add_argument("--mode", type=str, required=True,help="Specify retrieve mode: spare, dense, weighted, rrf")
 parser.add_argument("--dataset", type=str, required=True,help="Please enter the dataset to test")
 parser.add_argument("--topk", type=int, required=True, help="Please enter Top K you want to use")
+parser.add_argument("--embed", type=str, required=True,help="Specify the embedding model")
 args = parser.parse_args()
 
 print(f"We will be using {args.mode} for retrieving!\n")
 print(f"We will be testing {args.dataset}!\n")
+print(f"We will be using {args.embed} for embedding\n")
+
 
 
 #  ================== Configuration ==================================
@@ -34,11 +37,17 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 CHUNK_PATH = f"data/chunks/chunks_{args.dataset}.jsonl"
 IDX_PATH = f"index/ids_{args.dataset}.npy"
 EMB_PATH = f"index/embeddings_{args.dataset}.npy"
-# EMBED_MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
-EMBED_MODEL_ID = "BAAI/bge-m3"
 QUESTION_PATH = f"data/test/question_{args.dataset}.txt"
 ALPHA = 0.6 # Weight coefficient for weighted averaging
 REFERENCE_PATH = f"data/reference/reference_{args.dataset}.json"
+
+if args.embed == "sentence-transformers":
+    EMBED_MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
+elif args.embed == "BAAI":
+    EMBED_MODEL_ID = "BAAI/bge-m3"
+else:
+    raise ValueError("Invalid Embedding Model!")
+
 # ===================================================================
 
 # Construct Template Prompt
@@ -126,8 +135,14 @@ def main():
         print("→ Loading dense embeddings...")
         index = build_faiss_index(EMB_PATH)
         ids = np.load(IDX_PATH, allow_pickle=True)
-        # embed_model = SentenceTransformer(EMBED_MODEL_ID) 
-        embed_model = BGEM3FlagModel(EMBED_MODEL_ID, use_fp16=True)
+
+        # Instantiate the embedding model
+        if args.embed == "sentence-transformers":
+            embed_model = SentenceTransformer(EMBED_MODEL_ID) 
+        elif args.embed == "BAAI":
+            embed_model = BGEM3FlagModel(EMBED_MODEL_ID, use_fp16=True)
+        else: 
+            raise ValueError("Invalid Embedding Model!")
 
     if args.mode in ["sparse", "weighted", "rrf"]:
         print("→ Building BM25 index...")

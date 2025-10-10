@@ -86,7 +86,7 @@ We tested our system on Colab environments, so the following instruction will be
 
 ### Step 5-Running generation:
 1. Once you have embeddings and ids, now you can run RAG. 
-2. ```!python generate_deepseek.py --mode {retrieval method} --dataset {dataset} --topk {topk}```
+2. ```!python generate_deepseek.py --mode {retrieval method} --dataset {dataset} --topk {topk} --embed {embed}```
 3. If you want to use llama-3.1m then run ```generate_llama3.py``` with the same arguments. 
 4. options for retrieval method:
     - dense
@@ -95,5 +95,6 @@ We tested our system on Colab environments, so the following instruction will be
     - rrf
 5. options for dataset are the same as above. 
 6. topk is the number of top retrieved pieces of information to use. 
+7. embedding model to use， **MUST BE THE SAME AS** ```embedder.py```.
 
 ### Output
