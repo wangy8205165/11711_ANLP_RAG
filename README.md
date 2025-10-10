@@ -1,10 +1,21 @@
-## 11711_ANLP_RAG Homework 2
+# 11711_ANLP_RAG Homework 2
 
 This is Github repo is for Team (Yixiang Wang, Ibrahim Mohamed Hassan Aldarmaki, Junhao Chen) 
 
 
 We tested the RAG using two language models: Meta Llama-3.1 Instruct 8B and Deepseek-Distill-QWen-14B 
 You can run these two models by running ```generate_llama3.py``` or ```generate_deepseek.py```
+
+## How to retrieve information? 
+### Method 1: 
+1. You can run ```crawl_all.py --depth {depth}``` to retrieve the raw information
+2. depth is the number of levels you would like to crawl. For example, if depth = 2, then only subpages of main page will be crawled, if depth = 3, the subpages of subpages will be crawled and so on. 
+3. Within the file, you can define the target source in a list. 
+4. ```crawl_single.py``` is just a single-version of ```crawl_all.py```. 
+5. Within ```crawl_all.py```, the raw web information will be retrieved using ```request.get```, and then cleaned using ```Beautifulsoup```. 
+6. You can also do chunking within ```crawl_all.py``` by defining ```CHUNK_SIZE``` and ```OVERLAP```. 
+7. A corresponding txt file will be created under ```/raw_text``` containing all the raw text retrieved. 
+
 
 ## How to run the entire system?
 We tested our system on Colab environments, so the following instruction will be tailored only to Colab. 
@@ -68,8 +79,9 @@ We tested our system on Colab environments, so the following instruction will be
 #### For the test dataset, we have:
     - test
 3. options for embedding models are: 
-    - sentenec_transformer
-    - BAAI/bge-m3
+    - sentenec-transformers
+    - BAAI  
+    - Example: you can run ```!python embeder.py --model BAAI```. 
 
 4. Example: ```!python embeder.py --chunk carnegiemuseum --model transformer-sentence```
 5. After running this, the corresponding embeddings ```embeddings_{dataset}.npy``` and ids ```ids_{dataset}.npy``` will be created under ```\index```. 

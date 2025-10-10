@@ -12,17 +12,27 @@ import faiss
 # =============== Get Args =========================
 parser = argparse.ArgumentParser(description="Please enter the retrieve mode to use and dataset to test")
 parser.add_argument("--chunk", type=str, required=True,help="Pleaes select which chunk data to embed")
-parser.add_argument("--model",default="sentence-transformers/all-MiniLM-L6-v2",type=str,help="Please enter the embedding model to use")
+parser.add_argument("--model",default="sentence-transformers",type=str,help="Please enter the embedding model to use")
 args = parser.parse_args()
 
+if args.model == "sentence-transformers":
+    MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+elif args.model == "BAAI":
+    MODEL = "BAAI/bge-m3"
+else:
+    raise ValueError("Invalid Embedding Model!")
+
+print("*"*50)
+print(f"The embedding model used is {MODEL}")
+print("*"*50)
 
 # ============== Configurations =====================
 CHUNK_PATH = f"data/chunks/chunks_{args.chunk}.jsonl"
 # MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-MODEL = "BAAI/bge-m3"
+# MODEL = "BAAI/bge-m3"
 OUT_DIR = "index"
-OUT_EMB = f"embeddings_{args.chunk}.npy"
-OUT_IDX = f"ids_{args.chunk}.npy"
+OUT_EMB = f"embeddings_{args.chunk}_{MODEL}.npy"
+OUT_IDX = f"ids_{args.chunk}_{MODEL}.npy"
 
 
 def load_chunks(jsonl_path):
@@ -62,15 +72,18 @@ def build_embeddings(
     all_embs = []
     for i in tqdm(range(0, len(texts), batch_size)):
         batch_texts = texts[i:i + batch_size]
-        # emb = model.encode(
-        #     batch_texts,
-        #     show_progress_bar=False,
-        #     convert_to_numpy=True,
-        #     normalize_embeddings=normalize  # Normalize for cosine similarity
-        # )
-        emb = model.encode(batch_texts, batch_size=64)["dense_vecs"].astype("float32")  # [N,1024]
-        faiss.normalize_L2(emb)
 
+        if MODEL == "sentence-transformers/all-MiniLM-L6-v2":
+            emb = model.encode(
+                batch_texts,
+                show_progress_bar=False,
+                convert_to_numpy=True,
+                normalize_embeddings=normalize  # Normalize for cosine similarity
+            )
+        elif MODEL == "BAAI/bge-m3":
+            emb = model.encode(batch_texts, batch_size=64)["dense_vecs"].astype("float32")  # [N,1024]    
+        
+        faiss.normalize_L2(emb) # Normalize the embeddings
         all_embs.append(emb)
 
     embs = np.vstack(all_embs).astype("float32")
@@ -81,8 +94,8 @@ def build_embeddings(
     np.save(os.path.join(out_dir, OUT_IDX), ids)
     print(f"Saved {embs.shape[0]} embeddings to {out_dir}/")
 
-    embeddings = np.load(f"index/embeddings_{args.chunk}.npy")
-    index = np.load(f"index/ids_{args.chunk}.npy")
+    embeddings = np.load(f"index/embeddings_{args.chunk}_{MODEL}.npy")
+    index = np.load(f"index/ids_{args.chunk}_{MODEL}.npy")
 
 
     print("="*80)

@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 import re, json, os
 from urllib.parse import urljoin, urlparse
+import argparse
 
 # from torch import chunk
 
@@ -45,11 +46,17 @@ steeler_url = "https://www.steelers.com/"
 #              "event_cmu.txt","event_cmu2.txt","pitsymphony.txt"
 #              ]
 
+# ================== Parse the arguments ====================
+parser = argparse.ArgumentParser(description="Please enter the retrieve mode to use and dataset to test")
+parser.add_argument("--depth", type=int, required=True,help="Specify the number of depth to crawl")
+args = parser.parse_args()
+
+
 
 # URL_LIST = [trustarts_url, carnegie_museum_url,heinzhistory_url,thefrick_url,visitpitts_festival_url,pickleburgh_url,pghtacofest_url]
 
 URL_LIST = [pickleburgh_url]
-MAX_DEPTH = 2
+MAX_DEPTH = args.depth
 MAX_PAGES = 50   # How many subpages to crawl
 CHUNK_SIZE = 500
 OVERLAP = 50
