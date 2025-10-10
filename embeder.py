@@ -31,8 +31,8 @@ CHUNK_PATH = f"data/chunks/chunks_{args.chunk}.jsonl"
 # MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 # MODEL = "BAAI/bge-m3"
 OUT_DIR = "index"
-OUT_EMB = f"embeddings_{args.chunk}_{MODEL}.npy"
-OUT_IDX = f"ids_{args.chunk}_{MODEL}.npy"
+OUT_EMB = f"embeddings_{args.chunk}_{args.model}.npy"
+OUT_IDX = f"ids_{args.chunk}_{args.model}.npy"
 
 
 def load_chunks(jsonl_path):
@@ -57,8 +57,11 @@ def build_embeddings(
 
     # Load the model
     print(f"Loading embedding model: {model_name}")
-    # model = SentenceTransformer(model_name)
-    model = BGEM3FlagModel(MODEL, use_fp16=True)
+
+    if MODEL == "sentence-transformers/all-MiniLM-L6-v2":
+        model = SentenceTransformer(model_name)
+    elif MODEL == "BAAI/bge-m3":
+        model = BGEM3FlagModel(MODEL, use_fp16=True)
 
 
     # Read the chunks
@@ -94,8 +97,8 @@ def build_embeddings(
     np.save(os.path.join(out_dir, OUT_IDX), ids)
     print(f"Saved {embs.shape[0]} embeddings to {out_dir}/")
 
-    embeddings = np.load(f"index/embeddings_{args.chunk}_{MODEL}.npy")
-    index = np.load(f"index/ids_{args.chunk}_{MODEL}.npy")
+    embeddings = np.load(f"index/embeddings_{args.chunk}_{args.model}.npy")
+    index = np.load(f"index/ids_{args.chunk}_{args.model}.npy")
 
 
     print("="*80)
