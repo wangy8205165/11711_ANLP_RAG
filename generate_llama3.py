@@ -114,7 +114,7 @@ def generate_answer(llm_pipe, question, retrieved_chunks):
         {"role":"user", "content":prompt}
     ]
 
-    outputs = llm_pipe(message, max_new_tokens=64, do_sample=False) # Call the model to generate output
+    outputs = llm_pipe(message, max_new_tokens=1280, do_sample=False) # Call the model to generate output
     answer = outputs[0]["generated_text"][-1]['content']
 
     return answer
