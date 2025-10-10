@@ -66,6 +66,6 @@ if __name__ == "__main__":
     # print("处理完毕，总行数：", sum(1 for _ in open(output_path, 'r', encoding='utf-8')))
 
     
-    txt_path = "data/reference/reference_pghtacofest.txt"
-    json_path = "data/reference/reference_pghtacofest.json"
+    txt_path = "data/reference/reference_picksburgh.txt"
+    json_path = "data/reference/reference_picklesburgh.json"
     generate_reference(txt_path,json_path)
