@@ -42,34 +42,34 @@ We tested our system on Colab environments, so the following instruction will be
 1. First step is to run embedding of the target chunk: ```!python embeder.py --chunk {dataset} --model```
 2. options for dataset are:
 #### For single website or source of link, we have: 
-    - wikipeida
-    - wikihistory
-    - pittsgov
-    - britanica
-    - visitpitts
-    - pittstax
-    - cmu
-    - pitts_event
-    - downtownpitts
-    - pghcitypaper
-    - event_cmu
-    - event_cmu_2
-    - pittssymphony
-    - pittsopera
-    - trustarts
-    - carnegiemuseum
-    - heinzhistory
-    - thefrick
-    - visitpittsfestival
-    - pickleburgh
-    - pghtacofest
-    - pittsresweek
-    - littleitaly
-    - visitpitts_todo
-    - banana
-    - mlb
-    - nhl
-    - steeler
+    1. about_cmu
+    2. banana_split_fest
+    3. brittanica
+    4. carnegiemuseum
+    5. city_of_pittsburgh
+    6. CMUEvent
+    7. CMUEventCalendar
+    8. food_festival
+    9. heinz_history_center
+    10. littleItaly
+    11. Opera
+    12. operating_budget
+    13. penguins
+    14. PghCityPaperEvent
+    15. pghtacofest
+    16. picklesburgh
+    17. pirates
+    18. PittEventCalendar
+    19. pittsburgh_restaurant_week
+    20. sport_pittsburgh
+    21. steeler
+    22. Symphony
+    23. tax_regs
+    24. thefrick
+    25. visitpittsburgh
+    26. trustarts
+    27. wikipedia
+    28. steeler
 #### For categories, we have:
     - generalinfo
     - events
