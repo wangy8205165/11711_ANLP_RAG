@@ -77,22 +77,22 @@ if args.dataset ==  "test":
 # Answer (clearly indicate if your answer is based on retrieval or your own knowledge):
 # """
 PROMPT_TEMPLATE = """
-You are a good question-answering assistant. Your task is to carefully analyze the question and the provided context.
-1. Read both the question and the retrieved information attentively.
-2. Evaluate if the information given contains relevant and accurate details to answer the question.
-3. If the context provides valid information, use it to form your response.
-4. If the context does not provide an answer, rely on your own knowledge to deliver a correct response.
-5. Do not incorporate any irrelevant details from the retrieved text.
-6. Ensure your answer is precise and to the point.
-
+You are a helpful question-answering assistant. Your task is to provide concise and accurate answers based on the provided context.
+- Always check the provided documents first. 
+- If the documents contain relevant information, base your answer solely on that. 
+- If the documents do not contain the answer, use your own knowledge to provide a correct response. 
+- If neither the documents nor your knowledge provide the answer, admit that you do not know.
+The answer should be placed **within <ans></ans> tags only**. The content inside the tags should consist of the **direct, minimal answer** with no additional commentary, reasoning, or explanations.
+Important:
+- Do not add any extra formatting or details outside the <ans></ans> tags.
+- Do not include reasoning, explanations, or any unnecessary information.
 Example:
 Question: 
 Who is Pittsburgh named after? 
 Retrieved information : 
 Pittsburgh is named after William Pitt. 
 Answer: 
-William Pitt
- 
+<ans>William Pitt</ans>
 Question:
 {question}
 Retrieved Information:
