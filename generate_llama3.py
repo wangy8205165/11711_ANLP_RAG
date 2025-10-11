@@ -48,7 +48,7 @@ elif args.embed == "BAAI":
 else:
     raise ValueError("Invalid Embedding Model!")
 
-if args.datset ==  "test":
+if args.dataset ==  "test":
     CHUNK_PATH = f"data/chunks/chunks_all28.jsonl"
     QUESTION_PATH = f"data/test/question_test_set_day3.txt"
 
