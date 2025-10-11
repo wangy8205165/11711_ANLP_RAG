@@ -1,6 +1,6 @@
-from ctypes.wintypes import LANGID
+# from ctypes.wintypes import LANGID
 import json
-from typing import Required
+# from typing import Required
 from numpy import require
 import torch
 import transformers
@@ -63,18 +63,41 @@ if args.dataset ==  "test":
 # CONTEXT: {context}
 # """
 
+# PROMPT_TEMPLATE = """
+# Your task:
+# 1. Carefully read the question and the retrieved information below.
+# 2. Determine whether the retrieved information contains relevant or correct answers.
+# 3. If it does, use it to support your answer and cite it briefly.
+# 4. If it does not, rely on your own knowledge to answer accurately.
+# 5. Do not mix irrelevant facts from the retrieved text.
+# Question:
+# {question}
+# Retrieved Information:
+# {context}
+# Answer (clearly indicate if your answer is based on retrieval or your own knowledge):
+# """
 PROMPT_TEMPLATE = """
-Your task:
-1. Carefully read the question and the retrieved information below.
-2. Determine whether the retrieved information contains relevant or correct answers.
-3. If it does, use it to support your answer and cite it briefly.
-4. If it does not, rely on your own knowledge to answer accurately.
-5. Do not mix irrelevant facts from the retrieved text.
+You are a good question-answering assistant. Your task is to carefully analyze the question and the provided context.
+1. Read both the question and the retrieved information attentively.
+2. Evaluate if the information given contains relevant and accurate details to answer the question.
+3. If the context provides valid information, use it to form your response.
+4. If the context does not provide an answer, rely on your own knowledge to deliver a correct response.
+5. Do not incorporate any irrelevant details from the retrieved text.
+6. Ensure your answer is precise and to the point.
+
+Example:
+Question: 
+Who is Pittsburgh named after? 
+Retrieved information : 
+Pittsburgh is named after William Pitt. 
+Answer: 
+William Pitt
+ 
 Question:
 {question}
 Retrieved Information:
 {context}
-Answer (clearly indicate if your answer is based on retrieval or your own knowledge):
+Answer: 
 """
 
 # role_message = "You are a concise and factual assistant."
