@@ -207,7 +207,7 @@ def main():
         
 
     # 5. save the results
-    output_file = f"system_outputs/system_output_{args.embed}_{args.mode}_{args.dataset}_deepseek.json"
+    output_file = f"system_outputs/system_output_{args.embed}_{args.mode}_{args.dataset}_{args.topk}_deepseek.json"
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
     print(f"Saved{output_file}")
