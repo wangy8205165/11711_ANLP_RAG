@@ -207,9 +207,10 @@ def main():
         
 
     # 5. save the results
-    with open("system_outputs/system_output_1.json", "w", encoding="utf-8") as f:
+    output_file = f"system_outputs/system_output_{args.embed}_{args.mode}_{args.dataset}_deepseek.json"
+    with open(output_file, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
-    print("Saved system_outputs/system_output_1.json")
+    print(f"Saved{output_file}")
 
 if __name__ == "__main__":
     import numpy as np
