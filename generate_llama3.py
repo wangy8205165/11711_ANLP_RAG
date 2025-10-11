@@ -193,7 +193,7 @@ def main():
 
         print(f"→ LLM Answer: {ans}\n")
         
-        if args.datset != "test":
+        if args.dataset != "test":
             ref_ans = reference_answers.get(str(qi), "(No reference found)")
             print(f"→ Reference Answer: {ref_ans}\n")
         print("=" * 80)
