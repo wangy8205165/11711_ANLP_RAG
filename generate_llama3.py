@@ -48,6 +48,11 @@ elif args.embed == "BAAI":
 else:
     raise ValueError("Invalid Embedding Model!")
 
+if args.datset ==  "test":
+    CHUNK_PATH = f"data/chunks/chunks_all28.jsonl"
+    QUESTION_PATH = f"data/test/question_test_set_day3.txt"
+
+
 # ===================================================================
 
 # Construct Template Prompt
@@ -126,7 +131,8 @@ def main():
     questions = load_questions(QUESTION_PATH)
     llm = build_llm_pipeline(MODEL_ID, DEVICE)
     results = {}
-    reference_answers = load_reference_answers(REFERENCE_PATH)
+    if args.dataset != "test":
+        reference_answers = load_reference_answers(REFERENCE_PATH)
 
 
     
@@ -186,9 +192,10 @@ def main():
         results[str(qi)] = ans
 
         print(f"→ LLM Answer: {ans}\n")
-
-        ref_ans = reference_answers.get(str(qi), "(No reference found)")
-        print(f"→ Reference Answer: {ref_ans}\n")
+        
+        if args.datset != "test":
+            ref_ans = reference_answers.get(str(qi), "(No reference found)")
+            print(f"→ Reference Answer: {ref_ans}\n")
         print("=" * 80)
         
 
