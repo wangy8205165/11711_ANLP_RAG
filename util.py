@@ -1,6 +1,8 @@
 import json
 import argparse
 import os
+import pandas as pd
+
 parser = argparse.ArgumentParser(description="Please enter the retrieve mode to use and dataset to test")
 parser.add_argument("--exe", type=str, required=True,help="Specify what execution to do ")
 args = parser.parse_args()
@@ -147,6 +149,28 @@ def merge_jsonl_texts(input_dir, output_file):
     print(f"\n 合并完成，共 {len(merged_data)} 个 chunk，输出文件为: {output_file}")
 
 
+def convert():
+    # 输入 CSV 文件路径
+    csv_path = "test_set_day3.csv"
+
+    # 输出 TXT 文件路径
+    txt_path = "data/test/test_set_day3.txt"
+
+    # 读取 CSV 文件
+    df = pd.read_csv(csv_path)
+
+    # 提取 'Question' 列并去掉空值
+    questions = df["Question"].dropna().astype(str).tolist()
+
+    # 写入 TXT 文件
+    with open(txt_path, "w", encoding="utf-8") as f:
+        for q in questions:
+            f.write(q.strip() + "\n")
+
+    print(f"✅ 已成功写入 {len(questions)} 条问题到 {txt_path}")
+
+
+
 
 
 if __name__ == "__main__":
@@ -175,3 +199,5 @@ if __name__ == "__main__":
         input_dir = "data/reference" 
         output_file = "data/reference/reference_all28.json"
         merge_reference_files(input_dir, output_file)
+    elif args.exe == "convert":
+        convert()

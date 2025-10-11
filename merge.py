@@ -1,9 +1,7 @@
 import json
 import os
 
-# ==============================
-# 定义五大类及其数据集
-# ==============================
+
 categories = {
     "generalinfo": [
         "wikipedia",
@@ -45,20 +43,18 @@ categories = {
     ]
 }
 
-# ==============================
-# 定义路径模板
+
 # ==============================
 base_question = "data/test/question_{}.txt"
 base_chunk = "data/chunks/chunks_{}.jsonl"
 base_ref = "data/reference/reference_{}.json"
 
-# ==============================
-# 合并函数
+
 # ==============================
 def merge_files(category, datasets):
     print(f"🔹 Merging category: {category}")
 
-    # ---------- 合并 question ----------
+    # ---------- merge question ----------
     merged_questions = []
     for name in datasets:
         path = base_question.format(name)
@@ -72,9 +68,9 @@ def merge_files(category, datasets):
     os.makedirs(os.path.dirname(output_q), exist_ok=True)
     with open(output_q, "w", encoding="utf-8") as f:
         f.write("\n".join(merged_questions))
-    print(f"✅ Saved {output_q} ({len(merged_questions)} lines)")
+    print(f"Saved {output_q} ({len(merged_questions)} lines)")
 
-    # ---------- 合并 chunks ----------
+    # ---------- merge chunks ----------
     merged_chunks = []
     for name in datasets:
         path = base_chunk.format(name)
@@ -89,11 +85,10 @@ def merge_files(category, datasets):
         else:
             print(f"⚠️ Missing chunk file: {path}")
 
-    # 重新编号 chunk_id
     new_chunks = []
     for i, text in enumerate(merged_chunks):
         new_chunks.append({
-            "chunk_id": f"{i:04d}",  # 从0000开始编号
+            "chunk_id": f"{i:04d}", 
             "text": text
         })
 
@@ -102,9 +97,9 @@ def merge_files(category, datasets):
     with open(output_c, "w", encoding="utf-8") as f:
         for c in new_chunks:
             f.write(json.dumps(c, ensure_ascii=False) + "\n")
-    print(f"✅ Saved {output_c} ({len(new_chunks)} chunks)")
+    print(f" Saved {output_c} ({len(new_chunks)} chunks)")
 
-    # ---------- 合并 references ----------
+    # ---------- merge references ----------
     merged_refs = {}
     idx = 1
     for name in datasets:
@@ -123,14 +118,14 @@ def merge_files(category, datasets):
     os.makedirs(os.path.dirname(output_r), exist_ok=True)
     with open(output_r, "w", encoding="utf-8") as f:
         json.dump(merged_refs, f, ensure_ascii=False, indent=2)
-    print(f"✅ Saved {output_r} ({len(merged_refs)} references)\n")
+    print(f" Saved {output_r} ({len(merged_refs)} references)\n")
 
 
 # ==============================
-# 主程序入口
+# main function
 # ==============================
 if __name__ == "__main__":
     for cat, dataset_list in categories.items():
         merge_files(cat, dataset_list)
 
-    print("🎉 All merges completed successfully.")
+    print(" All merges completed successfully.")
