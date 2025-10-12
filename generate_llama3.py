@@ -51,6 +51,10 @@ else:
 if args.dataset ==  "test":
     CHUNK_PATH = f"data/chunks/chunks_all28.jsonl"
     QUESTION_PATH = f"data/test/question_test_set_day3.txt"
+    EMB_PATH = f"index/embeddings_all28_{args.embed}.npy"
+    IDX_PATH = f"index/ids_all28_{args.embed}.npy"
+
+
 
 
 # ===================================================================
