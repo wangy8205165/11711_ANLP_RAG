@@ -63,46 +63,59 @@ if args.dataset ==  "test":
 # CONTEXT: {context}
 # """
 
-# PROMPT_TEMPLATE = """
-# Your task:
-# 1. Carefully read the question and the retrieved information below.
-# 2. Determine whether the retrieved information contains relevant or correct answers.
-# 3. If it does, use it to support your answer and cite it briefly.
-# 4. If it does not, rely on your own knowledge to answer accurately.
-# 5. Do not mix irrelevant facts from the retrieved text.
-# Question:
-# {question}
-# Retrieved Information:
-# {context}
-# Answer (clearly indicate if your answer is based on retrieval or your own knowledge):
-# """
 PROMPT_TEMPLATE = """
-You are a helpful question-answering assistant. Your task is to provide concise and accurate answers based on the provided context.
-- Always check the provided documents first. 
-- If the documents contain relevant information, base your answer solely on that. 
-- If the documents do not contain the answer, use your own knowledge to provide a correct response. 
-- If neither the documents nor your knowledge provide the answer, admit that you do not know.
-The answer should be placed **within <ans></ans> tags only**. The content inside the tags should consist of the **direct, minimal answer** with no additional commentary, reasoning, or explanations.
-Important:
-- Do not add any extra formatting or details outside the <ans></ans> tags.
-- Do not include reasoning, explanations, or any unnecessary information.
-Example:
-Question: 
-Who is Pittsburgh named after? 
-Retrieved information : 
-Pittsburgh is named after William Pitt. 
-Answer: 
-<ans>William Pitt</ans>
+Your task:
+1. Carefully read the question and the retrieved information below.
+2. Determine whether the retrieved information contains relevant or correct answers.
+3. If it does, use it to support your answer and cite it briefly.
+4. If it does not, rely on your own knowledge to answer accurately.
+5. Do not mix irrelevant facts from the retrieved text.
 Question:
 {question}
 Retrieved Information:
 {context}
-Answer: 
+Answer (clearly indicate if your answer is based on retrieval or your own knowledge):
 """
+
+JUDGE_TEMPLATE = """
+Given a question, a reference answer, and a model's answer, decide if the model's answer conveys the same meaning as the reference answer.
+
+Question: {question}
+Reference answer: {reference}
+Model answer: {model_output}
+
+Please answer only "YES" if they are semantically equivalent, otherwise "NO".
+"""
+
+
+
+# PROMPT_TEMPLATE = """
+# You are a helpful question-answering assistant. Your task is to provide concise and accurate answers based on the provided context.
+# - Always check the provided documents first. 
+# - If the documents contain relevant information, base your answer solely on that. 
+# - If the documents do not contain the answer, use your own knowledge to provide a correct response. 
+# - If neither the documents nor your knowledge provide the answer, admit that you do not know.
+# The answer should be placed **within <ans></ans> tags only**. The content inside the tags should consist of the **direct, minimal answer** with no additional commentary, reasoning, or explanations.
+# Important:
+# - Do not add any extra formatting or details outside the <ans></ans> tags.
+# - Do not include reasoning, explanations, or any unnecessary information.
+# Example:
+# Question: 
+# Who is Pittsburgh named after? 
+# Retrieved information : 
+# Pittsburgh is named after William Pitt. 
+# Answer: 
+# <ans>William Pitt</ans>
+# Question:
+# {question}
+# Retrieved Information:
+# {context}
+# Answer: 
+# """
 
 # role_message = "You are a concise and factual assistant."
 role_message = "You are an expert assistant with access to external retrieved documents."
-
+judge_role_message = "You are an impartial evaluator."
 
 def load_reference_answers(path):
     """Load reference answers from JSON"""
@@ -220,6 +233,17 @@ def main():
             ref_ans = reference_answers.get(str(qi), "(No reference found)")
             print(f"→ Reference Answer: {ref_ans}\n")
         print("=" * 80)
+        judge_prompt = JUDGE_TEMPLATE.format(question=q, reference=ref_ans, model_output = ans)
+        
+        message = [
+        {"role": "system", "content": "" },
+        {"role":"user", "content":judge_prompt}
+        ]
+
+        outputs = llm(message, max_new_tokens=100, do_sample=False) # Call the model to generate output
+        judge_answer = outputs[0]["generated_text"][-1]['content']
+        print(f"Judge Results: {judge_answer}")
+
         
 
     # 5. save the results
