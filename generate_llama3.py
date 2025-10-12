@@ -233,17 +233,17 @@ def main():
         if args.dataset != "test":
             ref_ans = reference_answers.get(str(qi), "(No reference found)")
             print(f"→ Reference Answer: {ref_ans}\n")
-        print("=" * 80)
-        judge_prompt = JUDGE_TEMPLATE.format(question=q, reference=ref_ans, model_output = ans)
-        
-        message = [
-        {"role": "system", "content": "" },
-        {"role":"user", "content":judge_prompt}
-        ]
+            print("=" * 80)
+            judge_prompt = JUDGE_TEMPLATE.format(question=q, reference=ref_ans, model_output = ans)
+            
+            message = [
+            {"role": "system", "content": "" },
+            {"role":"user", "content":judge_prompt}
+            ]
 
-        outputs = llm(message, max_new_tokens=100, do_sample=False) # Call the model to generate output
-        judge_answer = outputs[0]["generated_text"][-1]['content']
-        print(f"Judge Results: {judge_answer}")
+            outputs = llm(message, max_new_tokens=100, do_sample=False) # Call the model to generate output
+            judge_answer = outputs[0]["generated_text"][-1]['content']
+            print(f"Judge Results: {judge_answer}")
 
         
 
