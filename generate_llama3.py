@@ -75,6 +75,7 @@ Question:
 Retrieved Information:
 {context}
 Answer (clearly indicate if your answer is based on retrieval or your own knowledge):
+Keep you answer as short as possible.
 """
 
 JUDGE_TEMPLATE = """
